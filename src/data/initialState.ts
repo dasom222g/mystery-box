@@ -1,4 +1,9 @@
-import { CalcRuleType, ProposalNumberType, RoundType } from "../lib/type";
+import {
+  CalcRuleType,
+  ProposalNumberType,
+  ProposalType,
+  RoundType,
+} from "../lib/type";
 import { calcRuleList } from "./common";
 
 // const total = 5
@@ -43,4 +48,13 @@ export const initialRoundList: RoundType[] = [
 export const initialProposalNumber: ProposalNumberType = {
   left: 0,
   right: 0,
+};
+
+export const initialProposal: ProposalType = {
+  proposalNumber: {
+    left: 0,
+    right: 0,
+  },
+  choiceList: [0, 0, 0, 0],
+  answer: 0,
 };

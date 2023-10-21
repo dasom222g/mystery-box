@@ -16,3 +16,15 @@ export interface ProposalNumberType {
   left: number;
   right: number;
 }
+
+export interface ChoiceType {
+  id: number;
+  data: number;
+  isAnswer: boolean;
+}
+
+export interface ProposalType {
+  proposalNumber: ProposalNumberType;
+  choiceList: number[];
+  answer: number;
+}
