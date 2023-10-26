@@ -15,6 +15,9 @@ module.exports = {
       borderRadius: {
         "mb-lg": "0.625rem",
       },
+      backgroundImage: {
+        "box-shadow": "url('../public/images/box_shadow_green.svg')",
+      },
     },
   },
   plugins: [],
