@@ -18,6 +18,15 @@ module.exports = {
       backgroundImage: {
         "box-shadow": "url('../public/images/box_shadow_green.svg')",
         lightning: "url('../public/images/lightning.svg')",
+        correct: "url('../public/images/icon-correct.svg')",
+        inCorrect: "url('../public/images/icon-inCorrect.svg')",
+      },
+      backgroundSize: {
+        6: "1.5rem",
+      },
+      backgroundPosition: {
+        "top-3": "center top -0.75rem",
+        "left-1": "center left -0.25rem",
       },
     },
   },
