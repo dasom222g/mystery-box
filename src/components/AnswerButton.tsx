@@ -45,14 +45,6 @@ const AnswerButton: FC<AnswerButtonProps> = ({ list, result, onClick }) => {
                   : ""
               }`}
             />
-            {/* {result && result.selectedItem === item && (
-              <img
-                src={`/images/icon-${result.state}.svg`}
-                alt="correct"
-                className="absolute w-6 -top-2 -left-1"
-              />
-            )} */}
-
             {item}
           </button>
         </li>

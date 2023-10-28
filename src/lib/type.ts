@@ -53,10 +53,3 @@ export interface CorrectResultType {
   selectedItem: number;
   state: CorrectStateType;
 }
-
-export interface ScoreType {
-  id: number;
-  step: number;
-  isSkip: boolean;
-  hintCount: number;
-}
