@@ -2,6 +2,8 @@ export interface RoundType {
   id: number;
   step: number;
   isComplete: boolean;
+  isSkip: boolean;
+  hintCount: number;
   calcRule: CalcRuleType;
 }
 

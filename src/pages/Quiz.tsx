@@ -16,11 +16,7 @@ import HintLock from "../components/HintLock";
 import Hint from "../components/Hint";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import {
-  currentRoundState,
-  roundListState,
-  scoreListState,
-} from "../data/dataState";
+import { currentRoundState, roundListState } from "../data/dataState";
 import Step from "../components/Step";
 
 const Quiz = () => {
@@ -42,9 +38,6 @@ const Quiz = () => {
 
   const randomMax = 100;
   const hintMaxCount = 10;
-
-  // score
-  const [scoreList, setScoreList] = useRecoilState(scoreListState);
 
   // 문제, 정답 관련
 
@@ -75,7 +68,7 @@ const Quiz = () => {
 
   const goResult = (isSkip: boolean) => {
     setCurrentRound((prev) => prev + 1);
-    setScoreList((prev) =>
+    setRoundList((prev) =>
       prev.map((item) =>
         item.step === currentRound
           ? { ...item, isSkip, hintCount: hintList.length }
@@ -94,11 +87,7 @@ const Quiz = () => {
     setCorrectResult(result);
     await sleep(2000);
 
-    if (isCorrect) {
-      goResult(false);
-      return;
-    }
-    setCorrectResult(null);
+    isCorrect ? goResult(false) : setCorrectResult(null);
   };
 
   const handleDuplicate = useCallback(() => {
@@ -158,13 +147,6 @@ const Quiz = () => {
 
   useEffect(() => {
     handleProposal();
-    const initialScore: ScoreType = {
-      id: 1,
-      step: 1,
-      isSkip: false,
-      hintCount: 1,
-    };
-    setScoreList((prev) => [...prev, initialScore]);
     setRoundList((prev) =>
       prev.map((item) =>
         item.step === currentRound ? { ...item, isComplete: true } : item
