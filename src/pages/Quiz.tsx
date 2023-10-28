@@ -5,11 +5,17 @@ import {
   initialRoundList,
 } from "../data/initialState";
 import Box from "../components/Box";
-import { HintType, HintValueType, ProposalType, RoundType } from "../lib/type";
+import {
+  CorrectResultType,
+  HintType,
+  HintValueType,
+  ProposalType,
+  RoundType,
+} from "../lib/type";
 import Button from "../components/Button";
 import Proposal from "../components/Proposal";
 import AnswerButtonList from "../components/AnswerButton";
-import { generateRandomAnswer } from "../data/common";
+import { generateRandomAnswer, sleep } from "../data/common";
 import HintLock from "../components/HintLock";
 import Hint from "../components/Hint";
 import { useNavigate } from "react-router-dom";
@@ -21,7 +27,14 @@ const Quiz = () => {
 
   const [proposal, setProposal] = useState<ProposalType>(initialProposal);
   const { proposalNumber, choiceList, answer } = proposal;
+
+  const [correctResult, setCorrectResult] = useState<CorrectResultType | null>(
+    null
+  );
+
+  // hint
   const [hintList, setHintList] = useState<HintType[]>(initialHintList);
+  const [isLock, setIstLock] = useState(true);
 
   const randomMax = 100;
   const hintMaxCount = 10;
@@ -53,8 +66,15 @@ const Quiz = () => {
     }));
   };
 
-  const handleCheck = (selectedItem: number) => {
+  const handleCorrectCheck = async (selectedItem: number) => {
     console.log("🚀 ~ selectedItem:", selectedItem);
+    const result: CorrectResultType = {
+      selectedItem,
+      state: selectedItem === answer ? "correct" : "inCorrect",
+    };
+    setCorrectResult(result);
+    await sleep(3000);
+    setCorrectResult(null);
   };
 
   const handleDuplicate = useCallback(() => {
@@ -89,22 +109,27 @@ const Quiz = () => {
   // hint관련
   const handleHintOpen = () => {
     console.log("open");
+    setHintList((prev) => [
+      ...prev,
+      { ...initialHintList[0], id: prev.length + 1 },
+    ]);
+    setIstLock(true);
   };
 
-  const handleHintAnswer = (value: HintValueType) => {
+  const handleHintAnswer = (value: HintValueType, id: number) => {
+    console.log("value", value);
     const { left: leftVale, right: rightValue } = value;
     const left = Number(leftVale);
     const right = Number(rightValue);
     const answer = roundList[0].calcRule.rule(left, right);
 
-    hintList.length === 1
-      ? setHintList((prev) =>
-          prev.map((item) => ({ ...item, left, right, answer }))
-        )
-      : setHintList((prev) => [
-          ...prev,
-          { left: Number(left), right: Number(right), answer },
-        ]);
+    setHintList((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, left, right, answer } : item
+      )
+    );
+
+    setIstLock(false);
   };
 
   const goResult = () => {
@@ -118,7 +143,7 @@ const Quiz = () => {
 
   useEffect(() => {
     handleDuplicate();
-    // console.log("정답", proposal.answer);
+    console.log("정답", proposal.answer);
   }, [handleDuplicate, proposal]);
 
   // 문제 확인
@@ -144,20 +169,25 @@ const Quiz = () => {
           <Proposal left={proposalNumber.left} right={proposalNumber.right} />
         </div>
         {hintList.map((hint, index) => (
-          <Hint key={index} onSubmit={handleHintAnswer} answer={hint.answer} />
+          <Hint
+            key={index}
+            id={hint.id}
+            onSubmit={handleHintAnswer}
+            answer={hint.answer}
+          />
         ))}
-
-        <div className="w-full py-8">
-          <HintLock disabled={true} onClick={handleHintOpen} />
-        </div>
+        {hintList.length !== hintMaxCount && (
+          <div className="w-full py-8">
+            <HintLock disabled={isLock} onClick={handleHintOpen} />
+          </div>
+        )}
       </div>
       <AnswerButtonList
         list={choiceList}
-        isReset={false}
-        result="default"
-        onClick={handleCheck}
+        result={correctResult}
+        onClick={handleCorrectCheck}
       />
-      <div className="mt-auto w-full">
+      <div className=" w-full mt-auto pt-8">
         <Button text={`Skip for now`} onClick={goResult} />
       </div>
     </div>

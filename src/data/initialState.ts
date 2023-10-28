@@ -68,6 +68,7 @@ export const initialHintValue: HintValueType = {
 
 export const initialHintList: HintType[] = [
   {
+    id: 1,
     left: 0,
     right: 0,
     answer: null,

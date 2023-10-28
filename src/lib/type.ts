@@ -35,5 +35,19 @@ export interface HintValueType {
 }
 
 export interface HintType extends ProposalNumberType {
+  id: number;
   answer: number | null;
+}
+
+const correctResult = {
+  default: "default",
+  correct: "correct",
+  inCorrect: "inCorrect",
+} as const;
+
+type CorrectStateType = (typeof correctResult)[keyof typeof correctResult];
+
+export interface CorrectResultType {
+  selectedItem: number;
+  state: CorrectStateType;
 }
