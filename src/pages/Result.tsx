@@ -2,9 +2,13 @@ import React from "react";
 import Explanation from "../components/Explanation";
 import Button from "../components/Button";
 import Title from "../components/Title";
+import { useNavigate } from "react-router-dom";
 
 const Result = () => {
-  const goNext = () => {};
+  const history = useNavigate();
+  const goNext = () => {
+    history("/quiz");
+  };
   return (
     <div className="h-full pt-6 flex flex-col items-center">
       <img src="/images/correct.svg" className="w-56" alt="correct" />

@@ -1,16 +1,12 @@
 import React, { useCallback, useEffect, useState } from "react";
-import {
-  initialHintList,
-  initialProposal,
-  initialRoundList,
-} from "../data/initialState";
-import Box from "../components/Box";
+import { initialHintList, initialProposal } from "../data/initialState";
 import {
   CorrectResultType,
   HintType,
   HintValueType,
   ProposalType,
   RoundType,
+  ScoreType,
 } from "../lib/type";
 import Button from "../components/Button";
 import Proposal from "../components/Proposal";
@@ -19,11 +15,19 @@ import { generateRandomAnswer, sleep } from "../data/common";
 import HintLock from "../components/HintLock";
 import Hint from "../components/Hint";
 import { useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import {
+  currentRoundState,
+  roundListState,
+  scoreListState,
+} from "../data/dataState";
+import Step from "../components/Step";
 
 const Quiz = () => {
   // logic
   const history = useNavigate();
-  const [roundList, setRoundList] = useState<RoundType[]>(initialRoundList);
+  const [roundList, setRoundList] = useRecoilState<RoundType[]>(roundListState);
+  const [currentRound, setCurrentRound] = useRecoilState(currentRoundState);
 
   const [proposal, setProposal] = useState<ProposalType>(initialProposal);
   const { proposalNumber, choiceList, answer } = proposal;
@@ -38,6 +42,9 @@ const Quiz = () => {
 
   const randomMax = 100;
   const hintMaxCount = 10;
+
+  // score
+  const [scoreList, setScoreList] = useRecoilState(scoreListState);
 
   // 문제, 정답 관련
 
@@ -66,14 +73,31 @@ const Quiz = () => {
     }));
   };
 
+  const goResult = (isSkip: boolean) => {
+    setCurrentRound((prev) => prev + 1);
+    setScoreList((prev) =>
+      prev.map((item) =>
+        item.step === currentRound
+          ? { ...item, isSkip, hintCount: hintList.length }
+          : item
+      )
+    );
+    history("/result");
+  };
+
   const handleCorrectCheck = async (selectedItem: number) => {
-    console.log("🚀 ~ selectedItem:", selectedItem);
+    const isCorrect = selectedItem === answer;
     const result: CorrectResultType = {
       selectedItem,
-      state: selectedItem === answer ? "correct" : "inCorrect",
+      state: isCorrect ? "correct" : "inCorrect",
     };
     setCorrectResult(result);
-    await sleep(3000);
+    await sleep(2000);
+
+    if (isCorrect) {
+      goResult(false);
+      return;
+    }
     setCorrectResult(null);
   };
 
@@ -132,12 +156,20 @@ const Quiz = () => {
     setIstLock(false);
   };
 
-  const goResult = () => {
-    history("/result");
-  };
-
   useEffect(() => {
     handleProposal();
+    const initialScore: ScoreType = {
+      id: 1,
+      step: 1,
+      isSkip: false,
+      hintCount: 1,
+    };
+    setScoreList((prev) => [...prev, initialScore]);
+    setRoundList((prev) =>
+      prev.map((item) =>
+        item.step === currentRound ? { ...item, isComplete: true } : item
+      )
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -154,16 +186,7 @@ const Quiz = () => {
   // view
   return (
     <div className="h-full w-full flex flex-col items-center">
-      <ul className="flex justify-center">
-        {roundList.map((round) => (
-          <li key={round.id}>
-            <Box
-              key={round.id}
-              type={round.isComplete ? "complete" : "default"}
-            />
-          </li>
-        ))}
-      </ul>
+      <Step />
       <div className="w-full px-2">
         <div className="pt-16 pb-10 w-full">
           <Proposal left={proposalNumber.left} right={proposalNumber.right} />
@@ -188,7 +211,7 @@ const Quiz = () => {
         onClick={handleCorrectCheck}
       />
       <div className=" w-full mt-auto pt-8">
-        <Button text={`Skip for now`} onClick={goResult} />
+        <Button text={`Skip for now`} onClick={() => goResult(true)} />
       </div>
     </div>
   );

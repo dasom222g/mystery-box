@@ -5,17 +5,20 @@ import Quiz from "./pages/Quiz";
 import Result from "./pages/Result";
 import Complete from "./pages/Complete";
 import Layout from "./components/layout/Layout";
+import { RecoilRoot } from "recoil";
 
 function App() {
   return (
-    <Layout>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/quiz" element={<Quiz />} />
-        <Route path="/result" element={<Result />} />
-        <Route path="/complete" element={<Complete />} />
-      </Routes>
-    </Layout>
+    <RecoilRoot>
+      <Layout>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/quiz" element={<Quiz />} />
+          <Route path="/result" element={<Result />} />
+          <Route path="/complete" element={<Complete />} />
+        </Routes>
+      </Layout>
+    </RecoilRoot>
   );
 }
 
