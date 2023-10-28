@@ -15,7 +15,7 @@ const Layout: FC<LayoutProps> = ({ children }) => {
   // view
   return (
     <div
-      className={`h-full py-10 px-6 ${
+      className={`h-full py-10 px-5 ${
         pathname === "/" ? "bg-mb-blue-600" : "bg-mb-gray-800"
       }`}
     >

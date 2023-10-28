@@ -1,20 +1,32 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { initialProposal, initialRoundList } from "../data/initialState";
+import {
+  initialHintList,
+  initialProposal,
+  initialRoundList,
+} from "../data/initialState";
 import Box from "../components/Box";
-import { ProposalType, RoundType } from "../lib/type";
+import { HintType, HintValueType, ProposalType, RoundType } from "../lib/type";
 import Button from "../components/Button";
 import Proposal from "../components/Proposal";
 import AnswerButtonList from "../components/AnswerButton";
 import { generateRandomAnswer } from "../data/common";
+import HintLock from "../components/HintLock";
+import Hint from "../components/Hint";
+import { useNavigate } from "react-router-dom";
 
 const Quiz = () => {
   // logic
+  const history = useNavigate();
   const [roundList, setRoundList] = useState<RoundType[]>(initialRoundList);
 
   const [proposal, setProposal] = useState<ProposalType>(initialProposal);
   const { proposalNumber, choiceList, answer } = proposal;
+  const [hintList, setHintList] = useState<HintType[]>(initialHintList);
 
   const randomMax = 100;
+  const hintMaxCount = 10;
+
+  // 문제, 정답 관련
 
   const handleProposal = () => {
     const { left, right, answer } = generateRandomAnswer(
@@ -74,6 +86,31 @@ const Quiz = () => {
     setProposal(copyProposal);
   }, [choiceList, proposal, roundList]);
 
+  // hint관련
+  const handleHintOpen = () => {
+    console.log("open");
+  };
+
+  const handleHintAnswer = (value: HintValueType) => {
+    const { left: leftVale, right: rightValue } = value;
+    const left = Number(leftVale);
+    const right = Number(rightValue);
+    const answer = roundList[0].calcRule.rule(left, right);
+
+    hintList.length === 1
+      ? setHintList((prev) =>
+          prev.map((item) => ({ ...item, left, right, answer }))
+        )
+      : setHintList((prev) => [
+          ...prev,
+          { left: Number(left), right: Number(right), answer },
+        ]);
+  };
+
+  const goResult = () => {
+    history("/result");
+  };
+
   useEffect(() => {
     handleProposal();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -81,7 +118,7 @@ const Quiz = () => {
 
   useEffect(() => {
     handleDuplicate();
-    console.log("정답", proposal.answer);
+    // console.log("정답", proposal.answer);
   }, [handleDuplicate, proposal]);
 
   // 문제 확인
@@ -91,7 +128,7 @@ const Quiz = () => {
 
   // view
   return (
-    <div>
+    <div className="h-full w-full flex flex-col items-center">
       <ul className="flex justify-center">
         {roundList.map((round) => (
           <li key={round.id}>
@@ -102,18 +139,27 @@ const Quiz = () => {
           </li>
         ))}
       </ul>
-      <div className="pt-16 pb-10">
-        <Proposal left={proposalNumber.left} right={proposalNumber.right} />
+      <div className="w-full px-2">
+        <div className="pt-16 pb-10 w-full">
+          <Proposal left={proposalNumber.left} right={proposalNumber.right} />
+        </div>
+        {hintList.map((hint, index) => (
+          <Hint key={index} onSubmit={handleHintAnswer} answer={hint.answer} />
+        ))}
+
+        <div className="w-full py-8">
+          <HintLock disabled={true} onClick={handleHintOpen} />
+        </div>
       </div>
-      <div>
-        <AnswerButtonList
-          list={choiceList}
-          isReset={false}
-          result="default"
-          onClick={handleCheck}
-        />
+      <AnswerButtonList
+        list={choiceList}
+        isReset={false}
+        result="default"
+        onClick={handleCheck}
+      />
+      <div className="mt-auto w-full">
+        <Button text={`Skip for now`} onClick={goResult} />
       </div>
-      {/* <Button text={`Skip for now`} onClick={handleCalc} /> */}
     </div>
   );
 };

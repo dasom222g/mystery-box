@@ -28,3 +28,12 @@ export interface ProposalType {
   choiceList: number[];
   answer: number;
 }
+
+export interface HintValueType {
+  left: string;
+  right: string;
+}
+
+export interface HintType extends ProposalNumberType {
+  answer: number | null;
+}

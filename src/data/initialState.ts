@@ -1,5 +1,7 @@
 import {
   CalcRuleType,
+  HintType,
+  HintValueType,
   ProposalNumberType,
   ProposalType,
   RoundType,
@@ -58,3 +60,16 @@ export const initialProposal: ProposalType = {
   choiceList: [0, 0, 0, 0],
   answer: 0,
 };
+
+export const initialHintValue: HintValueType = {
+  left: "",
+  right: "",
+};
+
+export const initialHintList: HintType[] = [
+  {
+    left: 0,
+    right: 0,
+    answer: null,
+  },
+];

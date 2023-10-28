@@ -13,7 +13,7 @@ const AnswerButton: FC<AnswerButtonProps> = ({
   onClick,
 }) => {
   return (
-    <ul className="-mx-2 flex flex-wrap">
+    <ul className="-mx-2 flex flex-wrap w-full">
       {list.map((item, index) => (
         <li key={index} className="p-2 w-1/2">
           <button
