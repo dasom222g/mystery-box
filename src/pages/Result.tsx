@@ -9,7 +9,9 @@ const Result = () => {
     <div className="h-full pt-6 flex flex-col items-center">
       <img src="/images/correct.svg" className="w-56" alt="correct" />
       {/* <img src="/images/incorrect.svg" alt="correct" /> */}
-      <Title mainTitle="정답입니다" />
+      <div className="mt-8">
+        <Title mainTitle="정답입니다" />
+      </div>
       {/* START: 풀이 */}
       <div className="w-full mt-8">
         <Explanation text="큰 수 + 두수의 차 x 2 - 작은 수" />

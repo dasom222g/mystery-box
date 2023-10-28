@@ -17,6 +17,7 @@ module.exports = {
       },
       backgroundImage: {
         "box-shadow": "url('../public/images/box_shadow_green.svg')",
+        lightning: "url('../public/images/lightning.svg')",
       },
     },
   },
