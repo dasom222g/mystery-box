@@ -42,3 +42,7 @@ export const generateRandomAnswer = (
   const answer = calcRule.rule(left, right);
   return { left, right, answer };
 };
+
+export const sleep = (ms: number) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};
