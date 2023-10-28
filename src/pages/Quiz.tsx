@@ -6,7 +6,6 @@ import {
   HintValueType,
   ProposalType,
   RoundType,
-  ScoreType,
 } from "../lib/type";
 import Button from "../components/Button";
 import Proposal from "../components/Proposal";
@@ -15,7 +14,7 @@ import { generateRandomAnswer, sleep } from "../data/common";
 import HintLock from "../components/HintLock";
 import Hint from "../components/Hint";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { currentRoundState, roundListState } from "../data/dataState";
 import Step from "../components/Step";
 
@@ -23,7 +22,7 @@ const Quiz = () => {
   // logic
   const history = useNavigate();
   const [roundList, setRoundList] = useRecoilState<RoundType[]>(roundListState);
-  const [currentRound, setCurrentRound] = useRecoilState(currentRoundState);
+  const currentRound = useRecoilValue(currentRoundState);
 
   const [proposal, setProposal] = useState<ProposalType>(initialProposal);
   const { proposalNumber, choiceList, answer } = proposal;
@@ -44,7 +43,7 @@ const Quiz = () => {
   const handleProposal = () => {
     const { left, right, answer } = generateRandomAnswer(
       randomMax,
-      roundList[0].calcRule
+      roundList.find((round) => round.step === currentRound)!.calcRule
     );
 
     const randomIndex = Math.floor(Math.random() * proposal.choiceList.length);
@@ -52,7 +51,7 @@ const Quiz = () => {
     const choiceList = proposal.choiceList.map((item, index) => {
       const { answer: randomAnswer } = generateRandomAnswer(
         randomMax,
-        roundList[0].calcRule
+        roundList.find((round) => round.step === currentRound)!.calcRule
       );
 
       return index === randomIndex ? answer : randomAnswer;
@@ -67,7 +66,6 @@ const Quiz = () => {
   };
 
   const goResult = (isSkip: boolean) => {
-    setCurrentRound((prev) => prev + 1);
     setRoundList((prev) =>
       prev.map((item) =>
         item.step === currentRound
@@ -103,7 +101,7 @@ const Quiz = () => {
       if (array.some((item) => item === current)) {
         const { left, right, answer } = generateRandomAnswer(
           randomMax,
-          roundList[0].calcRule
+          roundList.find((round) => round.step === currentRound)!.calcRule
         );
         copyProposal = {
           ...copyProposal,
@@ -117,11 +115,10 @@ const Quiz = () => {
     }, [] as number[]);
 
     setProposal(copyProposal);
-  }, [choiceList, proposal, roundList]);
+  }, [choiceList, currentRound, proposal, roundList]);
 
   // hint관련
   const handleHintOpen = () => {
-    console.log("open");
     setHintList((prev) => [
       ...prev,
       { ...initialHintList[0], id: prev.length + 1 },
@@ -130,11 +127,12 @@ const Quiz = () => {
   };
 
   const handleHintAnswer = (value: HintValueType, id: number) => {
-    console.log("value", value);
     const { left: leftVale, right: rightValue } = value;
     const left = Number(leftVale);
     const right = Number(rightValue);
-    const answer = roundList[0].calcRule.rule(left, right);
+    const answer = roundList
+      .find((round) => round.step === currentRound)!
+      .calcRule.rule(left, right);
 
     setHintList((prev) =>
       prev.map((item) =>
@@ -162,8 +160,11 @@ const Quiz = () => {
 
   // 문제 확인
   useEffect(() => {
-    console.log("문제", roundList[0].calcRule);
-  }, [roundList]);
+    console.log(
+      "문제",
+      roundList.find((round) => round.step === currentRound)!.calcRule
+    );
+  }, [currentRound, roundList]);
 
   // view
   return (

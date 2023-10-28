@@ -1,12 +1,35 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Title from "../components/Title";
 import Button from "../components/Button";
+import { useRecoilValue } from "recoil";
+import { roundListState } from "../data/dataState";
+import { useNavigate } from "react-router-dom";
 
 const Complete = () => {
   // logic
+  const history = useNavigate();
+
+  const roundList = useRecoilValue(roundListState);
+  const [score, setScore] = useState(0);
+
   const share = () => {
     console.log("share");
   };
+
+  const changeScore = () => {
+    console.log("roundList", roundList);
+    const maxScore = 100 / roundList.length;
+    const resultScore = roundList.reduce((acc, current): number => {
+      const { isSkip, hintCount } = current;
+      return isSkip ? acc : acc + (maxScore - (hintCount - 1) * 2);
+    }, 0);
+    setScore(resultScore);
+    // console.log("🚀 ~ resultScore:", resultScore);
+  };
+
+  useEffect(() => {
+    changeScore();
+  });
 
   // view
   return (
@@ -19,7 +42,7 @@ const Complete = () => {
       {/* START: 점수 */}
       <div className="flex items-center py-3 px-7 bg-mb-green-200 rounded-3xl">
         <i className="block w-3 h-6 bg-lightning bg-no-repeat" />
-        <span className="pl-1">97점</span>
+        <span className="pl-1">{score}점</span>
       </div>
       {/* END: 풀이 */}
       <div className="mt-auto w-full">
@@ -28,7 +51,11 @@ const Complete = () => {
           color="bg-mb-blue-700"
           onClick={share}
         />
-        <Button variant="transparent" text="Back to Home" onClick={share} />
+        <Button
+          variant="transparent"
+          text="Back to Home"
+          onClick={() => history("/")}
+        />
       </div>
     </div>
   );
