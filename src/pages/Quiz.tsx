@@ -10,7 +10,7 @@ import {
 import Button from "../components/Button";
 import Proposal from "../components/Proposal";
 import AnswerButtonList from "../components/AnswerButton";
-import { generateRandomAnswer } from "../data/common";
+import { generateQuiz } from "../data/common";
 import HintLock from "../components/HintLock";
 import Hint from "../components/Hint";
 import { useNavigate } from "react-router-dom";
@@ -36,35 +36,7 @@ const Quiz = () => {
   const [hintList, setHintList] = useState<HintType[]>(initialHintList);
   const [isLock, setIstLock] = useState(true);
 
-  const randomMax = 100;
   const hintMaxCount = 10;
-
-  // 문제, 정답 관련
-
-  const handleProposal = () => {
-    const { left, right, answer } = generateRandomAnswer(
-      randomMax,
-      roundList.find((round) => round.step === currentRound)!.calcRule
-    );
-
-    const randomIndex = Math.floor(Math.random() * proposal.choiceList.length);
-
-    const choiceList = proposal.choiceList.map((item, index) => {
-      const { answer: randomAnswer } = generateRandomAnswer(
-        randomMax,
-        roundList.find((round) => round.step === currentRound)!.calcRule
-      );
-
-      return index === randomIndex ? answer : randomAnswer;
-    });
-
-    setProposal((prev) => ({
-      ...prev,
-      proposalNumber: { left, right },
-      choiceList,
-      answer,
-    }));
-  };
 
   const goResult = (isSkip: boolean) => {
     setRoundList((prev) =>
@@ -88,35 +60,6 @@ const Quiz = () => {
 
     isCorrect ? goResult(false) : setCorrectResult(null);
   };
-
-  const handleDuplicate = useCallback(() => {
-    const uniqList = [...new Set(choiceList)];
-
-    if (uniqList.length === choiceList.length) {
-      return;
-    }
-    // 중복인 경우 실행
-    let copyProposal = { ...proposal };
-
-    choiceList.reduce((acc, current, index, array): number[] => {
-      if (array.some((item) => item === current)) {
-        const { left, right, answer } = generateRandomAnswer(
-          randomMax,
-          roundList.find((round) => round.step === currentRound)!.calcRule
-        );
-        copyProposal = {
-          ...copyProposal,
-          proposalNumber: { left, right },
-          answer,
-        };
-        copyProposal.choiceList[index] = answer;
-        return [...acc, answer];
-      }
-      return [...acc, current];
-    }, [] as number[]);
-
-    setProposal(copyProposal);
-  }, [choiceList, currentRound, proposal, roundList]);
 
   // hint관련
   const handleHintOpen = () => {
@@ -145,27 +88,26 @@ const Quiz = () => {
   };
 
   useEffect(() => {
-    handleProposal();
+    const calcRule = roundList.find(
+      (round) => round.step === currentRound
+    )!.calcRule;
+    const { left, right, answer, choiceList } = generateQuiz(calcRule);
+    setProposal((prev) => ({
+      ...prev,
+      proposalNumber: { left, right },
+      choiceList,
+      answer,
+    }));
     setRoundList((prev) =>
       prev.map((item) =>
         item.step === currentRound ? { ...item, isComplete: true } : item
       )
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    console.log("라운드", currentRound);
+    console.log("문제", calcRule.description);
+    console.log("선택지", choiceList);
+    console.log("정답", answer);
   }, []);
-
-  useEffect(() => {
-    handleDuplicate();
-    console.log("정답", proposal.answer);
-  }, [handleDuplicate, proposal]);
-
-  // 문제 확인
-  useEffect(() => {
-    console.log(
-      "문제",
-      roundList.find((round) => round.step === currentRound)!.calcRule
-    );
-  }, [currentRound, roundList]);
 
   // view
   return (

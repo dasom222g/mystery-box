@@ -31,6 +31,13 @@ export interface ProposalType {
   answer: number;
 }
 
+export interface QuizType {
+  left: number;
+  right: number;
+  answer: number;
+  choiceList: number[];
+}
+
 export interface HintValueType {
   left: string;
   right: string;

@@ -1,4 +1,4 @@
-import { CalcRuleType } from "../lib/type";
+import { CalcRuleType, QuizType, RoundType } from "../lib/type";
 import { randomInt } from "../lib/util";
 
 export const calcRuleList: CalcRuleType[] = [
@@ -42,4 +42,41 @@ export const generateRandomAnswer = (
   const right = randomInt(max);
   const answer = calcRule.rule(left, right);
   return { left, right, answer };
+};
+
+export const generateQuiz = (
+  calcRule: CalcRuleType,
+  options?: {
+    maxInputNumber?: number;
+    proposalCount?: number;
+  }
+): QuizType => {
+  const { maxInputNumber = 100, proposalCount = 4 } = options ?? {};
+  const { left, right, answer } = generateRandomAnswer(
+    maxInputNumber,
+    calcRule
+  );
+
+  const randomIndex = randomInt(proposalCount);
+
+  const choiceList = [...new Array(proposalCount)].map((item, index) => {
+    const recursiveGenerateAnswer = (): number => {
+      const { answer: randomAnswer } = generateRandomAnswer(
+        maxInputNumber,
+        calcRule
+      );
+      if (answer === randomAnswer || Infinity === randomAnswer) {
+        return recursiveGenerateAnswer();
+      }
+      return randomAnswer;
+    };
+    return index === randomIndex ? answer : recursiveGenerateAnswer();
+  });
+
+  const uniqList = [...new Set(choiceList)];
+  if (uniqList.length !== choiceList.length) {
+    return generateQuiz(calcRule, options);
+  }
+
+  return { left, right, answer, choiceList };
 };
