@@ -1,16 +1,18 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Title from "../components/Title";
 import Button from "../components/Button";
-import { useRecoilValue } from "recoil";
-import { roundListState } from "../data/dataState";
+import { useRecoilState } from "recoil";
+import { currentRoundState, roundListState } from "../data/dataState";
 import { useNavigate } from "react-router-dom";
 import { calcScore } from "../data/common";
+import { initialRoundList } from "../data/initialState";
 
 const Complete = () => {
   // logic
   const history = useNavigate();
 
-  const roundList = useRecoilValue(roundListState);
+  const [, setCurrentRound] = useRecoilState(currentRoundState);
+  const [roundList, setRoundList] = useRecoilState(roundListState);
   const [score, setScore] = useState(0);
 
   const share = () => {
@@ -22,6 +24,14 @@ const Complete = () => {
 
     setScore(calcScore(roundList));
   }, [roundList]);
+
+  const goBackHome = () => {
+    // reset
+    setCurrentRound(1);
+    setRoundList(initialRoundList);
+
+    history("/");
+  };
 
   useEffect(() => {
     changeScore();
@@ -50,7 +60,7 @@ const Complete = () => {
         <Button
           variant="transparent"
           text="Back to Home"
-          onClick={() => history("/")}
+          onClick={goBackHome}
         />
       </div>
     </div>
