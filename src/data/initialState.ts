@@ -6,6 +6,7 @@ import {
   ProposalType,
   RoundType,
 } from "../lib/type";
+import { randomInt } from "../lib/util";
 import { calcRuleList } from "./common";
 
 // const total = 5
@@ -21,7 +22,7 @@ export const initialRoundList: RoundType[] = [
     isComplete: true,
     isSkip: false,
     hintCount: 1,
-    calcRule: setCalcRule(Math.floor(Math.random() * calcRuleList.length)),
+    calcRule: setCalcRule(randomInt(calcRuleList.length)),
   },
   {
     id: 2,
@@ -29,7 +30,7 @@ export const initialRoundList: RoundType[] = [
     isSkip: false,
     hintCount: 1,
     isComplete: false,
-    calcRule: setCalcRule(Math.floor(Math.random() * calcRuleList.length)),
+    calcRule: setCalcRule(randomInt(calcRuleList.length)),
   },
   {
     id: 3,
@@ -37,7 +38,7 @@ export const initialRoundList: RoundType[] = [
     isSkip: false,
     hintCount: 1,
     isComplete: false,
-    calcRule: setCalcRule(Math.floor(Math.random() * calcRuleList.length)),
+    calcRule: setCalcRule(randomInt(calcRuleList.length)),
   },
   {
     id: 4,
@@ -45,7 +46,7 @@ export const initialRoundList: RoundType[] = [
     isSkip: false,
     hintCount: 1,
     isComplete: false,
-    calcRule: setCalcRule(Math.floor(Math.random() * calcRuleList.length)),
+    calcRule: setCalcRule(randomInt(calcRuleList.length)),
   },
   {
     id: 5,
@@ -53,7 +54,7 @@ export const initialRoundList: RoundType[] = [
     isSkip: false,
     hintCount: 1,
     isComplete: false,
-    calcRule: setCalcRule(Math.floor(Math.random() * calcRuleList.length)),
+    calcRule: setCalcRule(randomInt(calcRuleList.length)),
   },
 ];
 

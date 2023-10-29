@@ -1,4 +1,5 @@
-import { CalcRuleType } from "../lib/type";
+import { CalcRuleType, QuizType, RoundType } from "../lib/type";
+import { randomInt } from "../lib/util";
 
 export const calcRuleList: CalcRuleType[] = [
   {
@@ -37,12 +38,60 @@ export const generateRandomAnswer = (
   max: number,
   calcRule: CalcRuleType
 ): { left: number; right: number; answer: number } => {
-  const left = Math.floor(Math.random() * max) + 1;
-  const right = Math.floor(Math.random() * max) + 1;
+  const left = randomInt(max);
+  const right = randomInt(max);
   const answer = calcRule.rule(left, right);
   return { left, right, answer };
 };
 
-export const sleep = (ms: number) => {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+export const generateQuiz = (
+  calcRule: CalcRuleType,
+  options?: {
+    maxInputNumber?: number;
+    proposalCount?: number;
+  }
+): QuizType => {
+  const { maxInputNumber = 100, proposalCount = 4 } = options ?? {};
+  const { left, right, answer } = generateRandomAnswer(
+    maxInputNumber,
+    calcRule
+  );
+
+  const randomIndex = randomInt(proposalCount);
+
+  const choiceList = [...new Array(proposalCount)].map((item, index) => {
+    const recursiveGenerateAnswer = (): number => {
+      const { answer: randomAnswer } = generateRandomAnswer(
+        maxInputNumber,
+        calcRule
+      );
+      if (answer === randomAnswer || Infinity === randomAnswer) {
+        return recursiveGenerateAnswer();
+      }
+      return randomAnswer;
+    };
+    return index === randomIndex ? answer : recursiveGenerateAnswer();
+  });
+
+  const uniqList = [...new Set(choiceList)];
+  if (uniqList.length !== choiceList.length) {
+    return generateQuiz(calcRule, options);
+  }
+
+  return { left, right, answer, choiceList };
+};
+
+/**
+ * @description 라운드의 점수를 계산합니다.
+ *
+ * hint 1개는 2점 차감이고, skip은 0점 처리됩니다.
+ *
+ * @param roundList
+ */
+export const calcScore = (roundList: RoundType[]): number => {
+  const maxScore = 100 / roundList.length;
+  return roundList.reduce((acc, current): number => {
+    const { isSkip, hintCount } = current;
+    return isSkip ? acc : acc + (maxScore - (hintCount - 1) * 2);
+  }, 0);
 };
