@@ -80,3 +80,18 @@ export const generateQuiz = (
 
   return { left, right, answer, choiceList };
 };
+
+/**
+ * @description 라운드의 점수를 계산합니다.
+ *
+ * hint 1개는 2점 차감이고, skip은 0점 처리됩니다.
+ *
+ * @param roundList
+ */
+export const calcScore = (roundList: RoundType[]): number => {
+  const maxScore = 100 / roundList.length;
+  return roundList.reduce((acc, current): number => {
+    const { isSkip, hintCount } = current;
+    return isSkip ? acc : acc + (maxScore - (hintCount - 1) * 2);
+  }, 0);
+};
