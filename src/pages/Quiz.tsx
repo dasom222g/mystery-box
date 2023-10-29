@@ -10,13 +10,14 @@ import {
 import Button from "../components/Button";
 import Proposal from "../components/Proposal";
 import AnswerButtonList from "../components/AnswerButton";
-import { generateRandomAnswer, sleep } from "../data/common";
+import { generateRandomAnswer } from "../data/common";
 import HintLock from "../components/HintLock";
 import Hint from "../components/Hint";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { currentRoundState, roundListState } from "../data/dataState";
 import Step from "../components/Step";
+import { sleep } from "../lib/util";
 
 const Quiz = () => {
   // logic

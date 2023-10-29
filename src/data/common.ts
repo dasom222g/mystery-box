@@ -1,4 +1,5 @@
 import { CalcRuleType } from "../lib/type";
+import { randomInt } from "../lib/util";
 
 export const calcRuleList: CalcRuleType[] = [
   {
@@ -37,12 +38,8 @@ export const generateRandomAnswer = (
   max: number,
   calcRule: CalcRuleType
 ): { left: number; right: number; answer: number } => {
-  const left = Math.floor(Math.random() * max) + 1;
-  const right = Math.floor(Math.random() * max) + 1;
+  const left = randomInt(max);
+  const right = randomInt(max);
   const answer = calcRule.rule(left, right);
   return { left, right, answer };
-};
-
-export const sleep = (ms: number) => {
-  return new Promise((resolve) => setTimeout(resolve, ms));
 };
