@@ -22,18 +22,14 @@ const Complete = () => {
 
   const share = async () => {
     try {
-      console.log("navigator", navigator);
       if (!navigator.share) return;
       await navigator.share(shareData);
-      console.log("Success!!");
     } catch (error) {
-      console.error("error!!");
       console.error(error);
     }
   };
 
   const changeScore = () => {
-    console.log("roundList", roundList);
     const maxScore = 100 / roundList.length;
     const resultScore = roundList.reduce((acc, current): number => {
       const { isSkip, hintCount } = current;
