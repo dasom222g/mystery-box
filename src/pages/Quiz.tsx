@@ -155,16 +155,7 @@ const Quiz = () => {
 
   useEffect(() => {
     handleDuplicate();
-    console.log("정답", proposal.answer);
   }, [handleDuplicate, proposal]);
-
-  // 문제 확인
-  useEffect(() => {
-    console.log(
-      "문제",
-      roundList.find((round) => round.step === currentRound)!.calcRule
-    );
-  }, [currentRound, roundList]);
 
   // view
   return (

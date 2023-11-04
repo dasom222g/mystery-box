@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from "react";
+import React, { FC } from "react";
 import { useLocation } from "react-router-dom";
 
 interface LayoutProps {
@@ -9,9 +9,6 @@ const Layout: FC<LayoutProps> = ({ children }) => {
   // logic
   const { pathname } = useLocation();
 
-  useEffect(() => {
-    console.log("pathname", pathname);
-  });
   // view
   return (
     <div

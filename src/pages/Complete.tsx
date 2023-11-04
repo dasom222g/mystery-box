@@ -14,8 +14,22 @@ const Complete = () => {
   const setCurrentRound = useSetRecoilState(currentRoundState);
   const [score, setScore] = useState(0);
 
-  const share = () => {
-    console.log("share");
+  const shareData = {
+    title: "후츠릿 유튜브",
+    text: "세상을 바꾸는건 꿈을 꾸고 도전하는 사람들의 몫이다.",
+    url: "https://www.youtube.com/@chutzrit",
+  };
+
+  const share = async () => {
+    try {
+      console.log("navigator", navigator);
+      if (!navigator.share) return;
+      await navigator.share(shareData);
+      console.log("Success!!");
+    } catch (error) {
+      console.error("error!!");
+      console.error(error);
+    }
   };
 
   const changeScore = () => {
@@ -26,7 +40,6 @@ const Complete = () => {
       return isSkip ? acc : acc + (maxScore - (hintCount - 1) * 2);
     }, 0);
     setScore(resultScore);
-    // console.log("🚀 ~ resultScore:", resultScore);
   };
 
   const goHome = () => {

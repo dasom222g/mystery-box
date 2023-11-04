@@ -20,13 +20,9 @@ const Result = () => {
   };
 
   useEffect(() => {
-    console.log("currentRound", currentRound);
     setRound(roundList.find((round) => round.step === currentRound));
   }, [roundList, currentRound]);
 
-  useEffect(() => {
-    console.log("round", round);
-  }, [round]);
   return (
     <div className="h-full pt-6 flex flex-col items-center">
       {round && (
