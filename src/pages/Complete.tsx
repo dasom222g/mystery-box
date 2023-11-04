@@ -15,9 +15,9 @@ const Complete = () => {
   const [score, setScore] = useState(0);
 
   const shareData = {
-    title: "후츠릿 유튜브",
-    text: "세상을 바꾸는건 꿈을 꾸고 도전하는 사람들의 몫이다.",
-    url: "https://www.youtube.com/@chutzrit",
+    title: "미스터리 박스",
+    text: "미스터리 박스에 숨겨져있는 연산규칙을 찾아내 문제를 맞춰보세요!",
+    url: "https://gleaming-lokum-501c7f.netlify.app/",
   };
 
   const share = async () => {
