@@ -31,6 +31,24 @@ export const calcRuleList: CalcRuleType[] = [
     description: "두 수의 합을 12로 나눈 나머지",
     rule: (a, b) => (a + b) % 12,
   },
+  {
+    id: 6,
+    name: "addAndSubract",
+    description: "두수의 합,두수의 차",
+    rule: (a, b) => Number(String(a + b) + String(a - b)),
+  },
+  {
+    id: 7,
+    name: "doubleAndSubract",
+    description: "앞자리 * 2 - 뒷자리",
+    rule: (a, b) => a * 2 - b,
+  },
+  {
+    id: 8,
+    name: "addMultiflyRight",
+    description: " 두 수의 합 * 뒤의 수",
+    rule: (a, b) => (a + b) * b,
+  },
 ];
 
 export const generateRandomAnswer = (
